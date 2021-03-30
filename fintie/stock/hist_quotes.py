@@ -122,7 +122,7 @@ async def async_get_hist_quotes(
     await _init(session)
     url = "https://stock.xueqiu.com/v5/stock/chart/kline.json"
     params = {
-        "symbol": "SZ002353",
+        "symbol": symbol,
         "begin": int(ref_dt.timestamp()) * 1000,
         "period": freq,
         "type": fq_type,
@@ -131,11 +131,13 @@ async def async_get_hist_quotes(
     }
     async with session.get(url, params=params) as resp:
         if resp.status != 200:
-            logger.warning("get history quotes from %s failed: %s", url, resp.status)
+            logger.warning(
+                "get history quotes from %s failed: %s", url, resp.status)
             return None
         data = await resp.json()
         if data.get("error_code", -1) != 0:
-            logger.warning("get history quotes from %s failed: %s", url, resp.status)
+            logger.warning(
+                "get history quotes from %s failed: %s", url, resp.status)
             return None
         quotes = data.get("data", {})
 
